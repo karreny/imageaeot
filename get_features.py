@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 from models.VAE import VAE
 from dataset.dataset import CellImageDataset
-from features import extract_AE_features, extract_PCA_features
+from features import extract_AE_features, extract_PCA_features, extract_mahotas_features
 from utils import setup_logger
 
 import numpy as np
@@ -43,16 +43,12 @@ def main(args, logger):
     # extract AE features
     extract_AE_features(dataloader=dataloader, net=net, savefile=os.path.join(args.save_dir, 'AE_features.txt'))
 
-    # validate AE features
-    features = np.loadtxt(os.path.join(args.save_dir, 'AE_features.txt'))
-    logger.info("AE feature shape is %s" % str(features.shape))
-
     # extract PCA features
     extract_PCA_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'PCA_features.txt'))
 
-    # validate PCA features
-    features = np.loadtxt(os.path.join(args.save_dir, 'PCA_features.txt'))
-    logger.info("PCA feature shape is %s" % str(features.shape))
+    # extract mahotas features
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=False, drop_last=False)
+    extract_mahotas_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'mahotas_features'))
 
 if __name__ == "__main__":
     args = setup_args()

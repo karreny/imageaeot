@@ -5,14 +5,14 @@ from torch.autograd import Variable
 # adapted from pytorch/examples/vae and ethanluoyc/pytorch-vae
 
 class VAE(nn.Module):
-    def __init__(self, nc, ngf, ndf, latent_variable_size, batchnorm=False):
+    def __init__(self, nc=1, ngf=128, ndf=128, latent_variable_size=128):
         super(VAE, self).__init__()
 
         self.nc = nc
         self.ngf = ngf
         self.ndf = ndf
         self.latent_variable_size = latent_variable_size
-        self.batchnorm = batchnorm
+        self.batchnorm = False
 
         self.encoder = nn.Sequential(
             # input is 3 x 64 x 64
@@ -75,10 +75,7 @@ class VAE(nn.Module):
     def encode(self, x):
         h = self.encoder(x)
         h = h.view(-1, self.ndf*8*2*2)
-        if self.batchnorm:
-            return self.bn_mean(self.fc1(h)), self.fc2(h)
-        else:
-            return self.fc1(h), self.fc2(h)
+        return self.fc1(h), self.fc2(h)
 
     def reparametrize(self, mu, logvar):
         std = logvar.mul(0.5).exp_()

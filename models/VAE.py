@@ -92,7 +92,7 @@ class VAE(nn.Module):
         return self.decoder(h)
 
     def get_latent_var(self, x):
-        mu, logvar = self.encode(x.view(-1, self.nc, 64, 64))
+        mu, logvar = self.encode(x)
         z = self.reparametrize(mu, logvar)
         return z
 
@@ -101,7 +101,7 @@ class VAE(nn.Module):
         return res
 
     def forward(self, x):
-        mu, logvar = self.encode(x.view(-1, self.nc, 64, 64))
+        mu, logvar = self.encode(x)
         z = self.reparametrize(mu, logvar)
         res = self.decode(z)
         return res, z, mu, logvar

@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 from models.VAE import VAE
 from dataset.dataset import CellImageDataset
-from features import extract_AE_features, extract_PCA_features, extract_mahotas_features
+from features import extract_AE_features, extract_PCA_features, extract_mahotas_features, extract_flattened_features
 from utils import setup_logger
 
 import numpy as np
@@ -24,6 +24,11 @@ def setup_args():
     options.add_argument('--batch-size', action="store", dest="batch_size", default=128, type = int)
     options.add_argument('--latent-dims', action="store", dest="latent_dims", default=128, type = int)
 
+    options.add_argument('--ae-features', action="store_true")
+    options.add_argument('--pca-features', action="store_true")
+    options.add_argument('--flat-features', action="store_true")
+    options.add_argument('--mahotas-features', action="store_true")
+
     return options.parse_args()
 
 def main(args, logger):
@@ -41,14 +46,21 @@ def main(args, logger):
     logger.info(net)
 
     # extract AE features
-    extract_AE_features(dataloader=dataloader, net=net, savefile=os.path.join(args.save_dir, 'AE_features.txt'))
+    if args.ae_features:
+        extract_AE_features(dataloader=dataloader, net=net, savefile=os.path.join(args.save_dir, 'AE_features.txt'))
 
     # extract PCA features
-    extract_PCA_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'PCA_features.txt'))
+    if args.pca_features:
+        extract_PCA_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'PCA_features.txt'))
+    
+    # flatten images as features
+    if args.flat_features:
+        extract_flattened_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'flattened_features.txt'))
 
     # extract mahotas features
-    dataloader = DataLoader(dataset, batch_size=1, shuffle=False, drop_last=False)
-    extract_mahotas_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'mahotas_features'))
+    if args.mahotas_features:
+        dataloader = DataLoader(dataset, batch_size=1, shuffle=False, drop_last=False)
+        extract_mahotas_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'mahotas_features'))
 
 if __name__ == "__main__":
     args = setup_args()

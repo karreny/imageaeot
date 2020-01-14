@@ -1,4 +1,4 @@
-from optimal_transport.ot import get_ot_matrix
+from optimal_transport import get_ot_matrix, eval_ot_matrix
 from utils import setup_logger
 
 import argparse
@@ -26,3 +26,4 @@ if __name__ == "__main__":
     logger.info(" ".join(sys.argv))
     logger.info(args)
     get_ot_matrix(args, logger)
+    eval_ot_matrix(args, logger)

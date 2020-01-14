@@ -30,11 +30,18 @@ def get_distance_mat(args, logger):
     return distmat
 
 def get_ot_matrix(args, logger):
+    
+    savefile = os.path.join(args.save_dir, "ot_%s_%s_reg_%s.npy" % (args.label1, args.label2, args.reg))
+    
+    # return if ot matrix already exists
+    if os.path.isfile(savefile):
+        logger.info("OT matrix at %s already exists" % savefile)
+        return
 
     dist_mat = get_distance_mat(args, logger)
     logger.info("Distance matrix shape is %s" % str(dist_mat.shape))
+    
     ot_mat = sinkhorn_ot(dist_mat, reg=args.reg)
-
-    savefile = os.path.join(args.save_dir, "ot_%s_%s_reg_%s.npy" % (args.label1, args.label2, args.reg))
+    
     np.save(savefile, ot_mat)
     logger.info("OT matrix saved at %s" % savefile)

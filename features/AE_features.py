@@ -18,7 +18,8 @@ def extract_AE_features(dataloader, net, savefile):
         if is_cuda:
             inputs = inputs.cuda()
 
-        outputs, _ = net.encode(inputs)
+        #outputs, _ = net.encode(inputs)
+        outputs = net.encode(inputs)
 
         with open(savefile, 'ab') as f:
     	    np.savetxt(f, outputs.cpu().data, fmt='%f')

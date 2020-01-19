@@ -53,7 +53,8 @@ def main(args, logger):
     # extract PCA features
     if args.pca_features:
         os.makedirs(os.path.join(args.save_dir, 'PCA_recon'), exist_ok=True)
-        visualize_PCA_recon(dataloader=dataloader, dataloader_bs1=dataloader_bs1, savedir=os.path.join(args.save_dir, 'PCA_recon'))
+        visualize_PCA_recon(dataloader=dataloader, dataloader_bs1=dataloader_bs1, savedir=os.path.join(args.save_dir, 'PCA_recon'),
+                            n_components=args.latent_dims)
     
 
 if __name__ == "__main__":

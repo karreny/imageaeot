@@ -53,7 +53,8 @@ def main(args, logger):
 
     # extract PCA features
     if args.pca_features:
-        extract_PCA_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'PCA_features.txt'))
+        extract_PCA_features(dataloader=dataloader, net=None, savefile=os.path.join(args.save_dir, 'PCA_features.txt'),
+                             n_components=args.latent_dims)
     
     # flatten images as features
     if args.flat_features:

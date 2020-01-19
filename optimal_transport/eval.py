@@ -13,11 +13,13 @@ def eval_ot_matrix(args, logger):
     feat1 = features[get_label_indices(df=metadata, label=args.label1)]
     feat2 = features[get_label_indices(df=metadata, label=args.label2)]
 
-    ranges1, labels1 = generate_feature_splits(feat1, nbins=args.nbins)
-    ranges2, labels2 = generate_feature_splits(feat2, nbins=args.nbins)
+    if args.split_features:
+        _, labels1 = generate_feature_splits(feat1, nbins=args.nbins)
+        _, labels2 = generate_feature_splits(feat2, nbins=args.nbins)
 
-    logger.info("Labels 1 split along range %s" % str(ranges1))
-    logger.info("Labels 2 split along range %s" % str(ranges2))
+    else:
+        labels1 = feat1
+        labels2 = feat2
 
     pred1 = compute_pred_labels(ot_mat=ot_mat, ref_labels=labels2, num_labels=args.nbins)
     pred2 = compute_pred_labels(ot_mat=np.transpose(ot_mat), ref_labels=labels1, num_labels=args.nbins)

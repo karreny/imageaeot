@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 
-from models.AE import AE
+from models import model_dict
 from models.train_utils import train_model, evaluate_model, save_checkpoint, setup_optimizer
 from dataset import dataset_dict
 from utils import setup_logger
@@ -26,6 +26,7 @@ def setup_args():
     # model parameters
     options.add_argument('--optimizer', action="store", dest="optimizer", default='adam')
     options.add_argument('--latent-dims', action="store", dest="latent_dims", default=128, type = int)
+    options.add_argument('--model-type', action="store", dest="model_type", default='AE')
 
     # training parameters
     options.add_argument('--dataset-type', action="store", default='default')
@@ -58,7 +59,7 @@ def run_training(args, logger):
     testloader = DataLoader(testset, batch_size=args.batch_size, shuffle=False, drop_last=False)
 
     # load model
-    net = AE(latent_variable_size=args.latent_dims)
+    net = model_dict[args.model_type](latent_variable_size=args.latent_dims)
     logger.info(net)
 
     if torch.cuda.is_available():

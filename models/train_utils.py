@@ -1,57 +1,73 @@
 import torch
 import torch.optim as optim
+from torchnet.meter.meter import Meter
+
+import numpy as np
+
+class AverageMeter(Meter):
+    def __init__(self):
+        super(AverageMeter, self).__init__()
+        self.reset()
+
+    def add(self, value, n):
+        self.sum += value * n
+        if n <= 0:
+            raise ValueError("Cannot use a non-positive weight for the running stat.")
+        elif self.n == 0:
+            self.mean = 0.0 + value  # This is to force a copy in torch/numpy
+            self.mean_old = self.mean
+        else:
+            self.mean = self.mean_old + n * (value - self.mean_old) / float(self.n + n)
+            self.mean_old = self.mean
+
+        self.n += n
+
+    def value(self):
+        return self.mean
+
+    def reset(self):
+        self.n = 0
+        self.sum = 0.0
+        self.mean = np.nan
+        self.mean_old = 0.0
 
 def train_model(trainloader, model, optimizer, target_kw='label', single_batch=False):
     '''Method for training model (updating model params) based on given criterion'''
     
     model.train()
 
-    total_loss = 0
-    total_samples = 0
+    loss_trackers = {k: AverageMeter() for k in model.loss_names}
 
     for sample in trainloader:
         model.zero_grad()
         output = model(sample)
 
-        target = sample[target_kw]
-        batch_size = len(target)
-
-        loss = model.compute_loss(output)
+        loss = model.compute_loss(output, loss_trackers=loss_trackers)
 
         loss.backward()
         optimizer.step()
 
-        total_loss += loss.item()*batch_size
-        total_samples += batch_size
-
         if single_batch:
             break
 
-    return {'train_loss': total_loss / total_samples}
+    return {'train_'+k: loss_trackers[k].value() for k in model.loss_names}
 
 def evaluate_model(testloader, model, target_kw='label', single_batch=False):
     '''Method for evaluating model based on given criterion'''
     
     model.eval()
 
-    total_loss = 0
-    total_samples = 0
+    loss_trackers = {k: AverageMeter() for k in model.loss_names}
 
     for sample in testloader:
         with torch.no_grad():
             output = model(sample)
-            target = sample[target_kw]
-            batch_size = len(target)
-
-            loss = model.compute_loss(output)
-
-        total_loss += loss.item()*batch_size
-        total_samples += batch_size
+            _ = model.compute_loss(output, loss_trackers=loss_trackers)
 
         if single_batch:
             break
 
-    return {'test_loss': total_loss / total_samples}
+    return {'test_'+k: loss_trackers[k].value() for k in model.loss_names}
 
 def save_checkpoint(current_state, filename):
     torch.save(current_state, filename)

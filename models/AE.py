@@ -12,6 +12,7 @@ class AE(nn.Module):
         self.ngf = ngf
         self.ndf = ndf
         self.latent_variable_size = latent_variable_size
+        self.loss_names = ['recon_loss', 'loss']
 
         self.encoder = nn.Sequential(
             # input is 3 x 64 x 64
@@ -85,7 +86,12 @@ class AE(nn.Module):
         recon = self.decode(z)
         return {'input': x, 'latent': z, 'recon': recon}
 
-    def compute_loss(self, outputs):
+    def compute_loss(self, outputs, loss_trackers=None):
         loss = self.mseloss(outputs['input'], outputs['recon'])
+
+        if loss_trackers:
+            loss_trackers['loss'].add(loss.item(), len(outputs['input']))
+            loss_trackers['recon_loss'].add(loss.item(), len(outputs['input']))
+
         return loss
 

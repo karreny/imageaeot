@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 from models.AE import AE
 from models.train_utils import train_model, evaluate_model, save_checkpoint, setup_optimizer
-from dataset.dataset import CellImageDataset
+from dataset import dataset_dict
 from utils import setup_logger
 
 import numpy as np
@@ -28,6 +28,7 @@ def setup_args():
     options.add_argument('--latent-dims', action="store", dest="latent_dims", default=128, type = int)
 
     # training parameters
+    options.add_argument('--dataset-type', action="store", default='default')
     options.add_argument('--batch-size', action="store", dest="batch_size", default=128, type=int)
     options.add_argument('--num-workers', action="store", dest="num_workers", default=8, type=int)
     options.add_argument('--learning-rate', action="store", dest="learning_rate", default=1e-3, type=float)
@@ -50,8 +51,8 @@ def run_training(args, logger):
         torch.cuda.manual_seed(args.seed)
     
     # load data
-    trainset = CellImageDataset(datadir=args.datadir, metafile=args.train_metafile, mode='train')
-    testset = CellImageDataset(datadir=args.datadir, metafile=args.val_metafile, mode='val')
+    trainset = dataset_dict[args.dataset_type](datadir=args.datadir, metafile=args.train_metafile, mode='train')
+    testset = dataset_dict[args.dataset_type](datadir=args.datadir, metafile=args.val_metafile, mode='val')
 
     trainloader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True, drop_last=True)
     testloader = DataLoader(testset, batch_size=args.batch_size, shuffle=False, drop_last=False)

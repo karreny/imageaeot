@@ -1,14 +1,14 @@
-from dataset.dataset import CellImageDataset
+from dataset import dataset_dict
 
 def test():
-    dataset = CellImageDataset(datadir='data', metafile='splits/train_NIH3T3.csv', mode='train')
+    dataset = dataset_dict['labeled'](datadir='data', metafile='splits/train_total_labeled.csv', mode='train')
     print(len(dataset))
     sample = dataset[0]
     for key in sample:
         print(sample[key])
     print(sample['image'].shape)
 
-    dataset = CellImageDataset(datadir='data', metafile='splits/val_NIH3T3.csv', mode='val')
+    dataset = dataset_dict['labeled'](datadir='data', metafile='splits/val_total_labeled.csv', mode='val')
     print(len(dataset))
     sample = dataset[0]
     for key in sample:

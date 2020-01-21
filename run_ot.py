@@ -19,7 +19,7 @@ def setup_args():
     options.add_argument('--label2', action="store", default=1, type=float)
     options.add_argument('--reg', action="store", default=1, type=float)
     options.add_argument('--nbins', action="store", default=2, type=int)
-    options.add_argument('--split-features', action="store_true", default=False, type=bool)
+    options.add_argument('--split-features', action="store_true", default=False)
 
     return options.parse_args()
 

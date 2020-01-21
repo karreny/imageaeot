@@ -1,8 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 
-#from models.VAE import VAE
-from models.AE import AE
+from models import model_dict
 from dataset.dataset import CellImageDataset
 from features import extract_AE_features, extract_PCA_features, extract_mahotas_features, extract_flattened_features
 from utils import setup_logger
@@ -24,6 +23,7 @@ def setup_args():
     options.add_argument('--pretrained-file', action="store", dest="pretrained_file", default="pretrained/NIH3T3_128_0.00000001_1950.pth")
     options.add_argument('--batch-size', action="store", dest="batch_size", default=128, type = int)
     options.add_argument('--latent-dims', action="store", dest="latent_dims", default=128, type = int)
+    options.add_argument('--model-type', action="store", dest="model_type", default='AE')
 
     options.add_argument('--ae-features', action="store_true")
     options.add_argument('--pca-features', action="store_true")
@@ -41,8 +41,7 @@ def main(args, logger):
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, drop_last=False)
 
     # load model
-    #net = VAE(latent_variable_size=args.latent_dims)
-    net = AE(latent_variable_size=args.latent_dims)
+    net = model_dict[args.model_type](latent_variable_size=args.latent_dims)
     net.load_state_dict(torch.load(args.pretrained_file)['state_dict'])
 
     logger.info(net)

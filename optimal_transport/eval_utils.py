@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.metrics import roc_auc_score
 
 import os
 
@@ -28,3 +29,6 @@ def generate_feature_splits(feats, nbins):
     ranges = pd.qcut(feats, q=nbins)
     indices = pd.qcut(feats, q=nbins, labels=False)
     return ranges, indices
+
+def compute_roc_score(pred_labels, ref_labels):
+    return roc_auc_score(ref_labels.astype(np.int), pred_labels)

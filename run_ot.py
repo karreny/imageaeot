@@ -9,10 +9,10 @@ def setup_args():
 
     options = argparse.ArgumentParser()
     
-    options.add_argument('--metafile', action="store", default = "splits/train_NIH3T3.csv")
-    options.add_argument('--featfile', action="store", default = "results/features/NIH3T3_features/AE_features.txt")
-    options.add_argument('--evalfeatfile', action="store", default = "results/features/NIH3T3_features/mahotas_features_eccentriciy.txt")
-    options.add_argument('--save-dir', action="store", dest="save_dir", default="results/ot/test/")
+    options.add_argument('--metafile', action="store", default = "splits/train_total.csv")
+    options.add_argument('--featfile', action="store")
+    options.add_argument('--evalfeatfile', action="store")
+    options.add_argument('--save-dir', action="store", dest="save_dir", default="results/ot/")
     options.add_argument('--eval-save-dir', action="store", dest="eval_save_dir", default=None)
 
     options.add_argument('--label1', action="store", default=0, type=float)

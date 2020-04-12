@@ -19,7 +19,7 @@ def setup_args():
     options.add_argument('--datadir', action="store", default="data")
     options.add_argument('--train-metafile', action="store", default="splits/train_total.csv")
     options.add_argument('--val-metafile', action="store", default="splits/val_total.csv")
-    options.add_argument('--save-dir', action="store", default='results/AE/test/')
+    options.add_argument('--save-dir', action="store", default='results/AE/')
     options.add_argument('--save-freq', action="store", default=50, type=int)
     options.add_argument('--seed', action="store", default=42, type=int)
 

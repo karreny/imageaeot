@@ -17,10 +17,10 @@ def setup_args():
     options = argparse.ArgumentParser()
     
     options.add_argument('--datadir', action="store", default = "data")
-    options.add_argument('--metafile', action="store", default = "splits/train_NIH3T3.csv")
+    options.add_argument('--metafile', action="store", default = "splits/train_total.csv")
     
-    options.add_argument('--save-dir', action="store", dest="save_dir", default="results/features/test/")
-    options.add_argument('--pretrained-file', action="store", dest="pretrained_file", default="pretrained/NIH3T3_128_0.00000001_1950.pth")
+    options.add_argument('--save-dir', action="store", dest="save_dir", default="results/features/")
+    options.add_argument('--pretrained-file', action="store", dest="pretrained_file")
     options.add_argument('--batch-size', action="store", dest="batch_size", default=128, type = int)
     options.add_argument('--latent-dims', action="store", dest="latent_dims", default=128, type = int)
     options.add_argument('--model-type', action="store", dest="model_type", default='AE')
